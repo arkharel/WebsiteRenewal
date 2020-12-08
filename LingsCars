@@ -1,0 +1,394 @@
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    CS 2450 - GUI - Final Project
+    Create a Prototype for a website
+    Website: https://www.lingscars.com/
+    By: Alson Kharel & Duc Nguyen
+    Due Date:
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+package sample;
+
+import javafx.application.Application;
+import javafx.scene.image.Image;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+public class Main extends Application
+{
+    ComboBox<String> brand, model;
+    MenuBar menuBar;
+    Menu home, cars, vans, customers, aboutLing, funStuff, liveStaff, aToZ;   // Changing "Fun Stuff" to "Extra Content". Changed "Live Staff" to "Staff"
+    MenuItem fullPriceList, lowCreditDeals, orderACar, quote, priceUpdates, faq, blog, whoIsOnMyPage, customerLetters, customerInProgress,
+        customerMap, trustPirate, about, mantra, dragonsden, myLocation, carQuiz, playLingDrivingGame, websiteLinks, meetMyStaff, chatToMyStaff, aZList;
+
+    // Removed: How it works, Tips and Hints, Log Onto Lingo, movies, youtube, lingSpeaking, antiSlavery, playScalextric, kareokeMadness, twitterFeed, missletruck
+    // Changed: myLocation to Location, playLingDrivingGame to Driving Game, websiteLinks to Links, chatToMyStaff to Chat With Staff
+    SeparatorMenuItem  carSeparator, carSeparator1, carSeparator2, customerSeparator, aboutSeparator, funSeparator;
+    Label lingsCarHeader;
+    Pane pane;
+    StackPane header;
+    Group mainPageCenter;
+
+    @Override
+    public void start(Stage primaryStage)
+    {
+
+        pane = new Pane();
+
+        // Created MenuBar and Menu's
+        menuBar = new MenuBar();
+        home = new Menu("Home");
+        cars = new Menu("Cars");
+        vans = new Menu("Vans");
+        customers = new Menu("Customers");
+        aboutLing = new Menu("About Ling");
+        funStuff = new Menu("Extra Content");
+        liveStaff = new Menu("Staff");
+        aToZ = new Menu("A-Z List of Cars");
+        menuBar.getMenus().addAll(home,cars,vans,customers,aboutLing,funStuff,liveStaff,aToZ);
+        menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
+
+
+        // Separators
+        carSeparator = new SeparatorMenuItem();
+        carSeparator1 = new SeparatorMenuItem();
+        carSeparator2 = new SeparatorMenuItem();
+        customerSeparator = new SeparatorMenuItem();
+        aboutSeparator = new SeparatorMenuItem();
+        funSeparator = new SeparatorMenuItem();
+
+
+        // Cars Menu
+        fullPriceList = new MenuItem("Full Price List");
+        lowCreditDeals = new MenuItem("Low Credit Deals");
+        orderACar = new MenuItem("Order A Car");
+        quote = new MenuItem("Quotes");
+        priceUpdates = new MenuItem("Price Updates");
+        faq = new MenuItem("FAQ");
+        blog = new MenuItem("Blog");
+        cars.getItems().addAll(fullPriceList,lowCreditDeals,orderACar,quote,priceUpdates,faq,blog);
+        cars.getItems().add(2,carSeparator);
+        cars.getItems().add(4,carSeparator1);
+        cars.getItems().add(6,carSeparator2);
+
+
+        // Customers Menu
+        whoIsOnMyPage = new MenuItem("Who is on my page?");
+        customerLetters = new MenuItem("Customer Letters");
+        customerInProgress = new MenuItem("Customer's In Progress");
+        customerMap = new MenuItem("Customer Map");
+        trustPirate = new MenuItem("Trust Pirate");
+        customers.getItems().addAll(whoIsOnMyPage,customerLetters,customerInProgress,customerMap,trustPirate);
+        customers.getItems().add(4,customerSeparator);
+
+
+        // About Ling Menu
+        about = new MenuItem("About");
+        mantra = new MenuItem("Mantra");
+        dragonsden = new MenuItem("Dragon's Den");
+        myLocation = new MenuItem("Location");
+        aboutLing.getItems().addAll(about,myLocation,mantra,dragonsden);
+        aboutLing.getItems().add(2,aboutSeparator);
+
+        // Fun Stuff Menu
+        carQuiz = new MenuItem("Car Quiz");
+        playLingDrivingGame = new MenuItem("Driving Game");
+        websiteLinks = new MenuItem("Links");
+        funStuff.getItems().addAll(carQuiz,playLingDrivingGame,websiteLinks);
+        funStuff.getItems().add(2,funSeparator);
+
+
+        // Staff Menu
+        meetMyStaff = new MenuItem("Meet My Staff");
+        chatToMyStaff = new MenuItem("Chat With Staff");
+        liveStaff.getItems().addAll(meetMyStaff,chatToMyStaff);
+
+        // A - Z List
+        aZList = new MenuItem("A-Z List");
+        aToZ.getItems().add(aZList);
+
+        // Header for Ling's Cars
+        lingsCarHeader = new Label("Welcome to Ling's Cars!"); // Changed header from LingsCars.Com to Lings Cars. No need to say .com on the website
+        lingsCarHeader.setFont(Font.font("Goudy Old Style", FontWeight.EXTRA_BOLD, 45));
+        lingsCarHeader.setTextFill(Color.BLACK);
+        lingsCarHeader.setLayoutX(0);
+        lingsCarHeader.setLayoutY(40);
+
+        // Header Rectangle
+        Rectangle lingsHeader = new Rectangle(600,100);
+        lingsHeader.setFill(Color.TAN);
+
+        // StackPane to combine Rectangle and Text
+        header = new StackPane(lingsHeader, lingsCarHeader);
+        header.setLayoutX(0);
+        header.setLayoutY(25);
+
+
+        Image previousCarDeals = null;
+        Image todaysCarDeals = null;
+        try
+        {
+            previousCarDeals = new Image(new FileInputStream("D:\\last4weeks.png"));
+            todaysCarDeals = new Image(new FileInputStream("D:\\todaysDeals.png"));
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        // Today's Deal Image
+        ImageView todaysDeals = new ImageView(todaysCarDeals);
+        todaysDeals.setX(0);
+        todaysDeals.setY(325);
+        todaysDeals.setPreserveRatio(true);
+        todaysDeals.setSmooth(true);
+        todaysDeals.setFitHeight(330);
+        todaysDeals.setFitWidth(600);
+
+
+        // Last 4 Weeks Image
+        ImageView last4Weeks = new ImageView(previousCarDeals);
+        last4Weeks.setX(0);
+        last4Weeks.setY(110);
+        last4Weeks.setPreserveRatio(true);
+        last4Weeks.setSmooth(true);
+        last4Weeks.setFitWidth(600);
+        last4Weeks.setFitHeight(600);
+
+
+        // Group for everything
+        mainPageCenter = new Group(header);
+        mainPageCenter.getChildren().addAll(last4Weeks,todaysDeals);
+
+        aZList.setOnAction(actionEvent ->
+        {
+            // Created MenuBar and Menu's
+            menuBar = new MenuBar();
+            home = new Menu("Home");
+            cars = new Menu("Cars");
+            vans = new Menu("Vans");
+            customers = new Menu("Customers");
+            aboutLing = new Menu("About Ling");
+            funStuff = new Menu("Extra Content");
+            liveStaff = new Menu("Staff");
+            aToZ = new Menu("A-Z List of Cars");
+            menuBar.getMenus().addAll(home,cars,vans,customers,aboutLing,funStuff,liveStaff,aToZ);
+            menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
+
+
+            // Separators
+            carSeparator = new SeparatorMenuItem();
+            carSeparator1 = new SeparatorMenuItem();
+            carSeparator2 = new SeparatorMenuItem();
+            customerSeparator = new SeparatorMenuItem();
+            aboutSeparator = new SeparatorMenuItem();
+            funSeparator = new SeparatorMenuItem();
+
+
+            // Cars Menu
+            fullPriceList = new MenuItem("Full Price List");
+            lowCreditDeals = new MenuItem("Low Credit Deals");
+            orderACar = new MenuItem("Order A Car");
+            quote = new MenuItem("Quotes");
+            priceUpdates = new MenuItem("Price Updates");
+            faq = new MenuItem("FAQ");
+            blog = new MenuItem("Blog");
+            cars.getItems().addAll(fullPriceList,lowCreditDeals,orderACar,quote,priceUpdates,faq,blog);
+            cars.getItems().add(2,carSeparator);
+            cars.getItems().add(4,carSeparator1);
+            cars.getItems().add(6,carSeparator2);
+
+
+            // Customers Menu
+            whoIsOnMyPage = new MenuItem("Who is on my page?");
+            customerLetters = new MenuItem("Customer Letters");
+            customerInProgress = new MenuItem("Customer's In Progress");
+            customerMap = new MenuItem("Customer Map");
+            trustPirate = new MenuItem("Trust Pirate");
+            customers.getItems().addAll(whoIsOnMyPage,customerLetters,customerInProgress,customerMap,trustPirate);
+            customers.getItems().add(4,customerSeparator);
+
+
+            // About Ling Menu
+            about = new MenuItem("About");
+            mantra = new MenuItem("Mantra");
+            dragonsden = new MenuItem("Dragon's Den");
+            myLocation = new MenuItem("Location");
+            aboutLing.getItems().addAll(about,myLocation,mantra,dragonsden);
+            aboutLing.getItems().add(2,aboutSeparator);
+
+            // Fun Stuff Menu
+            carQuiz = new MenuItem("Car Quiz");
+            playLingDrivingGame = new MenuItem("Driving Game");
+            websiteLinks = new MenuItem("Links");
+            funStuff.getItems().addAll(carQuiz,playLingDrivingGame,websiteLinks);
+            funStuff.getItems().add(2,funSeparator);
+
+
+            // Staff Menu
+            meetMyStaff = new MenuItem("Meet My Staff");
+            chatToMyStaff = new MenuItem("Chat With Staff");
+            liveStaff.getItems().addAll(meetMyStaff,chatToMyStaff);
+
+            // A - Z List
+            aZList = new MenuItem("A-Z List");
+            aToZ.getItems().add(aZList);
+
+
+            // ComboBox for Brand and Model
+            brand = new ComboBox<>();
+            brand.getItems().addAll("Abarth","Alfa Romeo", "Audi", "BMW", "Citroen", "Dacia", "DS", "Fiat", "Ford", "Honda", "Hyundai", "Jaguar", "Jeep",
+            "Kia", "Land Rover", "Lexus", "Mazad", "Mercedes", "MG", "Mini", "Mitsubishi", "Nissan", "Peugeot", "Renault", "Seat", "Skoda", "Smart", "Subaru",
+            "Suzuki", "Toyota", "Vauxhall", "Volvo", "VW");
+
+            brand.setEditable(false);
+
+            model = new ComboBox<>();
+
+            brand.setLayoutX(225);
+            brand.setLayoutY(500);
+            model.setLayoutX(225);
+            model.setLayoutY(550);
+
+            Label brandLabel = new Label("Brand: ");
+            Label modelLabel = new Label("Model: ");
+            brandLabel.setLayoutX(185);
+            brandLabel.setLayoutY(500);
+            modelLabel.setLayoutX(185);
+            modelLabel.setLayoutY(550);
+
+
+            Image logoImage = null;
+            try
+            {
+                logoImage = new Image(new FileInputStream("D:\\logos.png"));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            ImageView logos = new ImageView(logoImage);
+            logos.setX(0);
+            logos.setY(125);
+            logos.setFitHeight(325);
+            logos.setFitWidth(600);
+
+
+            brand.setOnAction(actionEvent1 ->
+            {
+                if(brand.getValue().equals("Abarth"))
+                {
+                    model.getItems().addAll("595 Convertible", "595 Hatchback", "695 Convertible");
+                }
+                else if(brand.getValue().equals("Alfa Romeo"))
+                {
+                    model.getItems().addAll("Giulia Saloon", "Giulietta", "Stelvio Estate");
+                }
+                else if(brand.getValue().equals("Ford"))
+                {
+                    model.getItems().addAll("Ecosport",
+                            "Fiesta", "Fiesta Van", "Focus", "Focus Estate", "Galaxy Estate",
+                            "Grand Tourneo Connect Estate", "Kuga Estate", "Mondeo", "Mondeo Estate",
+                            "Mondeo Saloon", "Mustang Convertible", "Mustang Coupe", "Puma", "Ranger Pick-up",
+                            "S-Max Estate", "Tourneo Connect Estate", "Tourneo Courier Estate", "Transit Connect 200 L1",
+                            "Transit Courier Kombi Estate", "Transit Courier Van", "Transit Custom L1", "Transit Custom Tourneo L1",
+                            "Transit Medium Roof Van");
+                }
+            });
+
+            Button go = new Button("Go!");
+            go.setLayoutX(350);
+            go.setLayoutY(500);
+            go.setMinSize(30,30);
+
+            // Header for Ling's Cars
+            Label lingsCarHeader1 = new Label("Welcome to Ling's Cars!"); // Changed header from LingsCars.Com to Lings Cars. No need to say .com on the website
+            lingsCarHeader1.setFont(Font.font("Goudy Old Style", FontWeight.EXTRA_BOLD, 45));
+            lingsCarHeader1.setTextFill(Color.BLACK);
+            lingsCarHeader1.setLayoutX(0);
+            lingsCarHeader1.setLayoutY(40);
+
+            // Header Rectangle
+            Rectangle lingsHeader1 = new Rectangle(600,100);
+            lingsHeader1.setFill(Color.TAN);
+
+            // StackPane to combine Rectangle and Text
+            StackPane header1 = new StackPane(lingsHeader1, lingsCarHeader1);
+            header1.setLayoutX(0);
+            header1.setLayoutY(25);
+
+
+            go.setOnAction(actionEvent12 ->
+            {
+               if(brand.getValue().equals("Ford") && model.getValue().equals("Focus"))
+               {
+                   Image fordFocus = null;
+                   try
+                   {
+                       fordFocus = new Image(new FileInputStream("D:\\fordFocus.png"));
+                   }
+                   catch (FileNotFoundException e)
+                   {
+                       e.printStackTrace();
+                   }
+
+                   ImageView fordFocusImage = new ImageView(fordFocus);
+                   fordFocusImage.setFitWidth(600);
+                   fordFocusImage.setFitHeight(600);
+                   fordFocusImage.setPreserveRatio(true);
+                   fordFocusImage.setSmooth(true);
+                   fordFocusImage.setX(0);
+                   fordFocusImage.setY(150);
+
+
+                   //menuBar, brand, model
+                   Label fordLabel = new Label("Ford Focus");
+                   fordLabel.setFont(Font.font("Arial", FontWeight.BOLD, 40));
+                   fordLabel.setTextFill(Color.RED);
+                   fordLabel.setLayoutX(175);
+                   fordLabel.setLayoutY(50);
+
+
+                   Group goButtonGroup = new Group(menuBar, fordFocusImage,fordLabel);
+
+                   Scene goScene = new Scene(goButtonGroup, 600,600);
+                   primaryStage.setScene(goScene);
+                   primaryStage.show();
+
+
+               }
+            });
+
+
+            Group group = new Group(menuBar, brand, model, go, header1, brandLabel, modelLabel, logos);
+
+            Scene aToZScene = new Scene(group, 600,600);
+            primaryStage.setScene(aToZScene);
+            primaryStage.show();
+
+
+        });
+
+        pane.getChildren().addAll(menuBar, mainPageCenter);
+
+        primaryStage.setTitle("Ling's Cars - Prototype Website");
+        Scene scene = new Scene(pane, 600,620);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+
+    public static void main(String[] args)
+    {
+        launch(args);
+    }
+}
